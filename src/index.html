@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Babylon Mesh Configurator</title>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+  <div id="contentContainer">
+    <canvas id="renderCanvas"></canvas>
+
+    <div id="controlPanel">
+      <h1>Controls</h1>
+      <table>
+        <tr>
+          <th colspan="2">Lid</th>
+        </tr>
+        <tr>
+          <td><label for="lid-mat">Material:</label></td>
+          <td><select id="lid-mat"></select></td>
+        </tr>
+        <tr>
+          <td><label for="lid-tex">Texture:</label></label></td>
+          <td><select id="lid-tex"></select></td>
+        </tr>
+        <tr>
+          <th colspan="2">Pot</th>
+        </tr>
+        <tr>
+          <td><label for="pot-mat">Material:</label></td>
+          <td><select id="pot-mat"></select></td>
+        </tr>
+        <tr>
+          <td><label for="pot-tex">Texture:</label></label></td>
+          <td><select id="pot-tex"></select></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>

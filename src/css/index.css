@@ -1,0 +1,181 @@
+/* price table */
+
+.price-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 600px;
+}
+
+@media screen and (max-width: 645px) {
+    .price-table {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .price-table {
+        display: block;
+        max-width: -moz-fit-content;
+        max-width: fit-content;
+        overflow-x: auto;
+    }
+}
+
+.price-table th {
+    padding: 12px;
+    border-radius: 15px 0;
+    background-color: var(--green);
+    color: var(--lighttext);
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: normal;
+    font-size: x-large;
+}
+
+.price-table tr td {
+    padding: 12px 8px;
+    font-weight: bold;
+}
+
+.price-table tr td:last-child {
+    text-align: right;
+}
+
+.price-table .add {
+    font-style: italic;
+}
+
+.price-table .add td {
+    font-weight: normal;
+}
+
+.price-table .add td:first-child {
+    padding-left: 20px;
+}
+
+.price-table .rule {
+    border-bottom: 1px dashed var(--darkbg);
+}
+
+/* wordmark logo */
+
+#logo-wordmark {
+    background-color: var(--darkbg);
+    display: flex;
+    justify-content: center;
+}
+
+#logo-wordmark img {
+    height: 100px;
+    padding: 12px;
+}
+
+/* parallax */
+
+.parallax {
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@media screen and (max-width: 1000px) {
+    .parallax {
+        background-attachment: scroll;
+    }
+}
+
+.bg1 {
+    background-image: url("/media/background/bg1.jpg");
+}
+
+.bg2 {
+    background-image: url("/media/background/bg2.jpg");
+}
+
+.bg3 {
+    background-image: url("/media/background/bg3.jpg");
+}
+
+.bg4 {
+    background-image: url("/media/background/bg4.jpg");
+    background-position-y: top;
+}
+
+.bg5 {
+    background-image: url("/media/background/bg5.jpg");
+    background-position-y: top;
+}
+
+/* column layout */
+
+.col {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.col>* {
+    flex: 1;
+}
+
+.col-center {
+    align-items: center;
+}
+
+/* other */
+
+.centered {
+    text-align: center;
+}
+
+.img-container>img {
+    max-width: 100%;
+}
+
+@media screen and (max-width: 860px) {
+    #hours .img-container {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    #products .col {
+        flex-direction: column;
+    }
+}
+
+#about img {
+    flex: 0;
+    border-radius: 15px;
+    width: 300px;
+}
+
+@media screen and (max-width: 800px) {
+    #about .col {
+        flex-direction: column;
+    }
+
+    #about img {
+        width: 100%;
+        aspect-ratio: 2.2 / 1;
+        object-fit: cover;
+        object-position: 0 18%;
+    }
+
+    @supports not (aspect-ratio: 2.2 / 1) {
+        #about img {
+            width: 300px;
+        }
+    }
+}
+
+.banner {
+    background-color: red;
+    color: white;
+    font-size: x-large;
+    text-align: center;
+    width: 100%;
+}
