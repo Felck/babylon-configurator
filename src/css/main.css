@@ -54,7 +54,3 @@ body {
   font-size: large;
   border-radius: 2px;
 }
-
-.collapsed tr:not(:first-child) {
-  display: none;
-}

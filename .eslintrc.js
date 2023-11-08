@@ -3,7 +3,7 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "plugin:jsdoc/recommended"],
     "overrides": [
         {
             "env": {
@@ -21,8 +21,13 @@ module.exports = {
         "ecmaVersion": "latest"
     },
     "rules": {
+        "semi": [1, "always"],
+        "jsdoc/require-param-description": 0,
     },
     "globals": {
         "BABYLON": false
-    }
-}
+    },
+    "plugins": [
+        "jsdoc"
+    ]
+};

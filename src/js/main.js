@@ -1,20 +1,55 @@
+/**
+ * Mesh wrapper
+ * @typedef {{ mesh: BABYLON.Mesh, materialData: ?MaterialData }} MeshData
+ * 
+ * Material wrapper
+ * @typedef {{ material: BABYLON.Material, textureIndex: number }} MaterialData
+ *
+ * Texture wrapper
+ * @typedef {{ name: string, diffuseTexture: BABYLON.Texture, bumpTexture: BABYLON.Texture }} TextureData
+ */
+
 class Configurator {
+  /** @type { MeshData[] } */
   #meshes = [];
+  /** @type { MaterialData[] } */
   #materials = [];
+  /** @type { TextureData[] } */
   #textures = [{
     name: "None",
     diffuseTexture: null,
     bumpTexture: null
   }];
 
-  addMesh(mesh, materialIndex) {
-    this.#meshes.push({ mesh: mesh, materialData: this.#materials[materialIndex] });
+  /**
+   * Add a mesh and optionally assign a material to it.
+   * @param { BABYLON.Mesh } mesh 
+   * @param { ?number } materialIndex Index into #meshes or null
+   */
+  addMesh(mesh, materialIndex = null) {
+    if (materialIndex === null) {
+      this.#meshes.push({ mesh: mesh, materialData: null });
+    } else {
+      const materialData = this.#materials[materialIndex];
+      mesh.material = materialData.material;
+      this.#meshes.push({ mesh: mesh, materialData: materialData });
+    }
   }
 
-  addMaterial(material, textureIndex = 0) {
-    this.#materials.push({ material: material, textureIndex: textureIndex });
+  /**
+   * Add a material.
+   * @param { BABYLON.Material } material 
+   */
+  addMaterial(material) {
+    this.#materials.push({ material: material, textureIndex: 0 });
   }
 
+  /**
+   * Add a texture.
+   * @param { string } name 
+   * @param { BABYLON.Texture } diffuseTexture 
+   * @param { BABYLON.Texture } bumpTexture 
+   */
   addTexture(name, diffuseTexture = null, bumpTexture = null) {
     this.#textures.push({
       name: name,
@@ -23,15 +58,26 @@ class Configurator {
     });
   }
 
+  /**
+   * Assign a material to a mesh.
+   * @param { number } meshIndex Index into #meshes
+   * @param { number } materialIndex Index into #materials
+   * @returns { number } Index of the texture assigned to the selected material.
+   */
   setMaterial(meshIndex, materialIndex) {
     const materialData = this.#materials[materialIndex];
-    const meshData = this.#meshes[meshIndex]
+    const meshData = this.#meshes[meshIndex];
     meshData.mesh.material = materialData.material;
     meshData.materialData = materialData;
 
     return materialData.textureIndex;
   }
 
+  /**
+   * Assign a texture to a meshes material.
+   * @param { number } meshIndex Index into #meshes
+   * @param { number } textureIndex Index into #textures
+   */
   setTexture(meshIndex, textureIndex) {
     const textureData = this.#textures[textureIndex];
     const meshData = this.#meshes[meshIndex];
@@ -40,6 +86,12 @@ class Configurator {
     meshData.materialData.textureIndex = textureIndex;
   }
 
+  /**
+   * Check if the two meshes have the same texture assigned.
+   * @param { number } mesh1 Index into #meshes
+   * @param { number } mesh2 Index into #meshes
+   * @returns { boolean } True if both meshes use the same texture
+   */
   haveSameMaterial(mesh1, mesh2) {
     return this.#meshes[mesh1].materialData === this.#meshes[mesh2].materialData;
   }
@@ -48,6 +100,54 @@ class Configurator {
 
   get textures() { return this.#textures; }
 }
+
+/**
+ * Creates a material with custom vertex and fragment shaders.
+ * @param { BABYLON.Scene } scene
+ * @returns { BABYLON.ShaderMaterial } Created material
+ */
+const createShaderMaterial = function (scene) {
+  BABYLON.Effect.ShadersStore['colorSineVertexShader'] = `
+    precision highp float;
+    attribute vec3 position;
+    uniform mat4 worldViewProjection;
+    out vec3 vPosition;
+    
+    void main() {
+      vPosition = position;
+      vec4 p = vec4(position, 1.);
+      gl_Position = worldViewProjection * p;
+    }
+  `;
+
+  BABYLON.Effect.ShadersStore['colorSineFragmentShader'] = `
+    precision highp float;
+    in vec3 vPosition;
+    uniform float time;
+
+    void main() {
+      gl_FragColor = vec4(sin(vPosition.x + time), sin(vPosition.y + time), sin(vPosition.z + time), 1.);
+    }
+  `;
+
+  const shaderMaterial = new BABYLON.ShaderMaterial(
+    'Color Sine',
+    scene,
+    'colorSine',
+    {
+      attributes: ["position"],
+      uniforms: ["worldViewProjection", "time"]
+    }
+  );
+
+  let time = 0;
+  scene.registerBeforeRender(function () {
+    shaderMaterial.setFloat("time", time);
+    time += scene.getEngine().getDeltaTime() / 500.0;
+  });
+
+  return shaderMaterial;
+};
 
 const configurator = new Configurator();
 const canvas = document.getElementById("renderCanvas");
@@ -77,13 +177,20 @@ const createScene = function () {
   mat3.wireframe = true;
   configurator.addMaterial(mat3);
 
+  configurator.addMaterial(createShaderMaterial(scene));
+
   configurator.addTexture("Stones",
     new BABYLON.Texture("assets/textures/floor.png", scene),
     new BABYLON.Texture("assets/textures/floorn.png", scene));
 
   configurator.addTexture("Rock",
     new BABYLON.Texture("assets/textures/rock.png", scene),
-    new BABYLON.Texture("assets/textures/rockn.png", scene))
+    new BABYLON.Texture("assets/textures/rockn.png", scene));
+
+  const marbleTexture = new BABYLON.MarbleProceduralTexture("marbleTex", 512, scene);
+  marbleTexture.numberOfTilesHeight = 3;
+  marbleTexture.numberOfTilesWidth = 3;
+  configurator.addTexture("Procedural Marble", marbleTexture, null);
 
   BABYLON.OBJFileLoader.COMPUTE_NORMALS = true;
   BABYLON.SceneLoader.ImportMesh("", "assets/meshes/", "teapot.obj", scene, function (meshes) {
@@ -140,8 +247,8 @@ const initControlPanel = function () {
     if (configurator.haveSameMaterial(0, 1)) {
       lidTexSelect.value = this.value;
     }
-  })
-}
+  });
+};
 
 const scene = createScene();
 
