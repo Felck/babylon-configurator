@@ -140,6 +140,7 @@ const createShaderMaterial = function (scene) {
     }
   );
 
+  // Update time uniform
   let time = 0;
   scene.registerBeforeRender(function () {
     shaderMaterial.setFloat("time", time);
@@ -162,20 +163,20 @@ const createScene = function () {
   const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 100, 0), scene);
   light.intensity = 0.7;
 
-  const mat0 = new BABYLON.StandardMaterial("Default", scene);
-  configurator.addMaterial(mat0);
+  const matDefault = new BABYLON.StandardMaterial("Default", scene);
+  configurator.addMaterial(matDefault);
 
-  const mat1 = new BABYLON.StandardMaterial("Diffuse Blue", scene);
-  mat1.diffuseColor = new BABYLON.Color3(0.5, 0.8, 1);
-  configurator.addMaterial(mat1);
+  const matBlue = new BABYLON.StandardMaterial("Diffuse Blue", scene);
+  matBlue.diffuseColor = new BABYLON.Color3(0.5, 0.8, 1);
+  configurator.addMaterial(matBlue);
 
-  const mat2 = new BABYLON.StandardMaterial("Diffuse Yellow", scene);
-  mat2.diffuseColor = new BABYLON.Color3(1, 1, 0.5);
-  configurator.addMaterial(mat2);
+  const matYellow = new BABYLON.StandardMaterial("Diffuse Yellow", scene);
+  matYellow.diffuseColor = new BABYLON.Color3(1, 1, 0.5);
+  configurator.addMaterial(matYellow);
 
-  const mat3 = new BABYLON.StandardMaterial("Wireframe", scene);
-  mat3.wireframe = true;
-  configurator.addMaterial(mat3);
+  const matWireframe = new BABYLON.StandardMaterial("Wireframe", scene);
+  matWireframe.wireframe = true;
+  configurator.addMaterial(matWireframe);
 
   configurator.addMaterial(createShaderMaterial(scene));
 
